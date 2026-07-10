@@ -1,1 +1,0 @@
-# CarbonReductionTracker.sol
