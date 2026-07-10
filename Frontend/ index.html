@@ -1,68 +1,391 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonReductionTracker - Frontend Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #060b13;
+        }
+        .phone-container {
+            max-width: 412px;
+            height: 844px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 text-slate-100">
 
-contract CarbonReductionTracker {
+    <div class="mb-6 text-center">
+        <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">
+            Carbon Tracker
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">Simulador de Compensación de Carbono & Incentivos Económicos</p>
+        <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold text-cyan-400 bg-cyan-950/50 rounded-full border border-cyan-500/20">
+            <i class="fa-solid fa-leaf mr-1"></i> Monitoreo de Externalidades en Tiempo Real
+        </span>
+    </div>
 
-    address public admin;
+    <div class="phone-container relative w-full rounded-[40px] border-8 border-slate-800 bg-slate-950 flex flex-col overflow-hidden">
+        
+        <div class="w-full px-6 pt-3 pb-2 flex justify-between items-center text-xs text-slate-400 font-medium z-10 bg-slate-950">
+            <span>08:45</span>
+            <div class="w-20 h-4 bg-black rounded-full absolute left-1/2 transform -translate-x-1/2 top-2"></div> <div class="flex items-center space-x-1.5">
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
 
-    struct Company {
-        string name;
-        uint256 emissionsReduced; // Toneladas de CO2 reducidas
-        uint256 rewardPoints;     // Puntos obtenidos
-        bool registered;
-    }
+        <div class="flex-1 flex flex-col overflow-y-auto no-scrollbar relative p-5">
 
-    mapping(address => Company) public companies;
+            <div id="screen-login" class="flex-1 flex flex-col justify-between py-8">
+                <div class="text-center mt-12">
+                    <div class="inline-flex p-5 bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 rounded-3xl border border-cyan-500/20 shadow-lg mb-6">
+                        <i class="fa-solid fa-cloud-arrow-down text-4xl text-cyan-400 animate-bounce"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold tracking-tight">Carbon Tracker</h2>
+                    <p class="text-slate-400 text-sm mt-2 max-w-xs mx-auto">
+                        Plataforma de incentivos económicos para la reducción verificable de emisiones de gases de efecto invernadero ($CO_2e$).
+                    </p>
+                </div>
 
-    event CompanyRegistered(address company, string name);
-    event ReductionRecorded(address company, uint256 tons, uint256 points);
+                <div class="space-y-4">
+                    <button onclick="connectWallet()" class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold rounded-2xl shadow-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center space-x-3">
+                        <i class="fa-solid fa-fingerprint text-lg"></i>
+                        <span>Ingresar con Identidad Digital</span>
+                    </button>
+                    <p class="text-[10px] text-center text-slate-500 leading-relaxed max-w-xs mx-auto">
+                        Al ingresar, el sistema calcula tu línea base de emisión y valida los créditos de carbono transferibles generados en el distrito.
+                    </p>
+                </div>
+            </div>
 
-    constructor() {
-        admin = msg.sender;
-    }
+            <div id="screen-dashboard" class="hidden flex-1 flex flex-col space-y-5">
+                
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-500 to-emerald-500 flex items-center justify-center text-slate-950 font-bold">
+                            C
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-1">
+                                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span>
+                                <span class="text-xs text-emerald-400 font-semibold uppercase">Usuario Activo</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 font-mono">ID-Ciudadano: #15092-Lima</p>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-cyan-400 rounded-lg text-[10px] font-mono">
+                        Nodo Green-Econ
+                    </span>
+                </div>
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Solo el administrador puede realizar esta accion");
-        _;
-    }
+                <div class="p-5 bg-gradient-to-br from-slate-900 to-slate-950 rounded-3xl border border-slate-800/80 shadow-md relative overflow-hidden">
+                    <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Créditos de Carbono Acumulados</p>
+                    <div class="flex items-baseline space-x-2 mt-2">
+                        <span class="text-4xl font-extrabold text-cyan-400 tracking-tight" id="eco-balance">350</span>
+                        <span class="text-sm font-bold text-slate-300">CRD</span>
+                    </div>
+                    <div class="h-[1px] bg-slate-800 my-4"></div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">
+                        Cada 1 CRD equivale a 10 kg de $CO_2$ mitigado. Estos créditos poseen poder adquisitivo subsidiado dentro del mercado local.
+                    </p>
+                </div>
 
-    function registerCompany(address _company, string memory _name) public onlyAdmin {
-        require(!companies[_company].registered, "La empresa ya esta registrada");
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800/60 text-center">
+                        <p class="text-[10px] text-slate-400 font-medium">Tu $CO_2$ Mitigado</p>
+                        <p class="text-xl font-bold mt-1 text-slate-100" id="user-recycled">3,500 Kg</p>
+                        <span class="text-[9px] text-slate-500 block mt-0.5">Impacto Individual</span>
+                    </div>
+                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800/60 text-center">
+                        <p class="text-[10px] text-slate-400 font-medium">Meta Distrital Reducida</p>
+                        <p class="text-xl font-bold mt-1 text-emerald-400" id="global-recycled">84,200 Kg</p>
+                        <span class="text-[9px] text-slate-500 block mt-0.5">Objetivo CO2 Mundial</span>
+                    </div>
+                </div>
 
-        companies[_company] = Company({
-            name: _name,
-            emissionsReduced: 0,
-            rewardPoints: 0,
-            registered: true
-        });
+                <div class="p-4 bg-cyan-950/20 rounded-2xl border border-cyan-500/20 space-y-3">
+                    <div class="flex items-center space-x-2 text-xs font-semibold text-cyan-400">
+                        <i class="fa-solid fa-bicycle"></i>
+                        <span>Registrar Actividad Sostenible (Simulación)</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400">
+                        Simula ingresar los **kilómetros recorridos en movilidad eléctrica o bicicleta** en vez de transporte fósil para calcular el carbono evitado.
+                    </p>
+                    <div class="flex space-x-2">
+                        <input type="number" id="recycle-input" placeholder="Km recorridos" class="flex-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-cyan-500">
+                        <button onclick="simulateRecycling()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition-all">
+                            Calcular e Inyectar
+                        </button>
+                    </div>
+                </div>
 
-        emit CompanyRegistered(_company, _name);
-    }
+                <div class="space-y-2 flex-1">
+                    <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Historial de Registro Ambiental</h3>
+                    <div class="space-y-2 h-44 overflow-y-auto no-scrollbar pr-1" id="ledger-feed">
+                        <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-900 flex justify-between items-center text-xs">
+                            <div class="flex items-center space-x-2">
+                                <span class="p-1.5 bg-cyan-500/10 text-cyan-400 rounded-lg">
+                                    <i class="fa-solid fa-bolt text-[10px]"></i>
+                                </span>
+                                <div>
+                                    <p class="font-medium">Paneles Solares Validados</p>
+                                    <p class="text-[9px] text-slate-500">Residencial San Isidro · Autenticado</p>
+                                </div>
+                            </div>
+                            <span class="font-bold text-cyan-400">+250 CRD</span>
+                        </div>
+                        <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-900 flex justify-between items-center text-xs">
+                            <div class="flex items-center space-x-2">
+                                <span class="p-1.5 bg-cyan-500/10 text-cyan-400 rounded-lg">
+                                    <i class="fa-solid fa-bicycle text-[10px]"></i>
+                                </span>
+                                <div>
+                                    <p class="font-medium">Ciclovía Interdistrital Activa</p>
+                                    <p class="text-[9px] text-slate-500">App SmartMovil · Telemetría GPS</p>
+                                </div>
+                            </div>
+                            <span class="font-bold text-cyan-400">+100 CRD</span>
+                        </div>
+                    </div>
+                </div>
 
-    function recordReduction(address _company, uint256 _tons) public onlyAdmin {
-        require(companies[_company].registered, "Empresa no registrada");
+                <div class="pt-2 flex justify-around border-t border-slate-900 text-slate-400 text-xs">
+                    <button class="flex flex-col items-center space-y-1 text-cyan-400">
+                        <i class="fa-solid fa-chart-line text-lg"></i>
+                        <span class="text-[9px]">Panel</span>
+                    </button>
+                    <button onclick="goToMarket()" class="flex flex-col items-center space-y-1 hover:text-slate-200">
+                        <i class="fa-solid fa-gift text-lg"></i>
+                        <span class="text-[9px]">Canjes / Incentivos</span>
+                    </button>
+                </div>
+            </div>
 
-        companies[_company].emissionsReduced += _tons;
-        companies[_company].rewardPoints += (_tons * 100);
+            <div id="screen-market" class="hidden flex-1 flex flex-col space-y-4">
+                
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <button onclick="goToDashboard()" class="p-1.5 bg-slate-950 text-slate-400 hover:text-slate-100 rounded-lg">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h2 class="text-lg font-bold">Mercado de Incentivos</h2>
+                    </div>
+                    <span class="px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-full text-[11px] font-bold" id="market-balance-badge">
+                        🛒 350 CRD
+                    </span>
+                </div>
 
-        emit ReductionRecorded(_company, _tons, _tons * 100);
-    }
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                    Intercambia tus créditos por incentivos económicos directos financiados mediante los fondos de compensación de huella de carbono.
+                </p>
 
-    function getCompany(address _company)
-        public
-        view
-        returns (
-            string memory,
-            uint256,
-            uint256
-        )
-    {
-        Company memory c = companies[_company];
+                <div class="space-y-3 flex-1 overflow-y-auto no-scrollbar h-[440px]">
+                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800/80 flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="space-y-1">
+                                <span class="px-2 py-0.5 bg-cyan-500/10 text-cyan-400 text-[9px] font-bold rounded-md uppercase">Transporte Urbano</span>
+                                <h3 class="text-sm font-semibold text-slate-100">Pase Libre Mensual - Línea 1 / Metropolitano</h3>
+                                <p class="text-[10px] text-slate-400">Subsidio gubernamental completo por movilidad cero emisiones.</p>
+                            </div>
+                            <i class="fa-solid fa-train-subway text-cyan-400 text-lg"></i>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xs font-extrabold text-cyan-400">Costo: 200 CRD</span>
+                            <button onclick="redeemReward('Pase Mensual Transporte Limpio', 200)" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition-all">
+                                Canjear Beneficio
+                            </button>
+                        </div>
+                    </div>
 
-        return (
-            c.name,
-            c.emissionsReduced,
-            c.rewardPoints
-        );
-    }
-}
+                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800/80 flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="space-y-1">
+                                <span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] font-bold rounded-md uppercase">Impuestos</span>
+                                <h3 class="text-sm font-semibold text-slate-100">Descuento del 15% en Arbitrios Municipales</h3>
+                                <p class="text-[10px] text-slate-400">Aplicado al impuesto predial del próximo trimestre por baja huella de carbono hogareña.</p>
+                            </div>
+                            <i class="fa-solid fa-building-columns text-emerald-400 text-lg"></i>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xs font-extrabold text-cyan-400">Costo: 300 CRD</span>
+                            <button onclick="redeemReward('15% Descuento Arbitrios', 300)" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition-all">
+                                Canjear Beneficio
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800/80 flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="space-y-1">
+                                <span class="px-2 py-0.5 bg-amber-500/10 text-amber-400 text-[9px] font-bold rounded-md uppercase">Energía</span>
+                                <h3 class="text-sm font-semibold text-slate-100">Bono de Descuento en Tu Recibo de Luz</h3>
+                                <p class="text-[10px] text-slate-400">Vale de S/. 50 aplicable a consumos de luz convencional.</p>
+                            </div>
+                            <i class="fa-solid fa-plug text-amber-400 text-lg"></i>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xs font-extrabold text-cyan-400">Costo: 100 CRD</span>
+                            <button onclick="redeemReward('Bono S/.50 Recibo Luz', 100)" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition-all">
+                                Canjear Beneficio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="success-popup" class="hidden absolute inset-x-5 bottom-8 bg-slate-900 border border-cyan-500/40 p-4 rounded-2xl flex flex-col items-center justify-center space-y-2 shadow-2xl shadow-black z-30 transition-all duration-300">
+            <span class="w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                <i class="fa-solid fa-check text-lg"></i>
+            </span>
+            <p class="text-xs font-bold text-center text-slate-100">Transacción Exitosa</p>
+            <p class="text-[9px] text-center text-slate-400" id="popup-desc">Créditos procesados correctamente.</p>
+        </div>
+
+    </div>
+
+    <div class="mt-4 text-center text-xs text-slate-500 max-w-sm">
+        <p><i class="fa-regular fa-lightbulb mr-1 text-amber-400"></i> <strong>Guía para la exposición grupal:</strong> Den click al botón principal, ingresen en el cuadro interactivo un número de kilómetros (ej. "45") y vean cómo las métricas económicas calculan dinámicamente el beneficio ambiental.</p>
+    </div>
+
+    <script>
+        let balance = 350;
+        let userRecycled = 3500;
+        let globalRecycled = 84200;
+
+        function connectWallet() {
+            document.getElementById('screen-login').classList.add('hidden');
+            document.getElementById('screen-dashboard').classList.remove('hidden');
+            updateUI();
+        }
+
+        function goToMarket() {
+            document.getElementById('screen-dashboard').classList.add('hidden');
+            document.getElementById('screen-market').classList.remove('hidden');
+            updateUI();
+        }
+
+        function goToDashboard() {
+            document.getElementById('screen-market').classList.add('hidden');
+            document.getElementById('screen-dashboard').classList.remove('hidden');
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('eco-balance').innerText = balance.toLocaleString();
+            document.getElementById('user-recycled').innerText = userRecycled.toLocaleString() + " Kg";
+            document.getElementById('global-recycled').innerText = globalRecycled.toLocaleString() + " Kg";
+            document.getElementById('market-balance-badge').innerText = `🛒 ${balance.toLocaleString()} CRD`;
+        }
+
+        function simulateRecycling() {
+            const inputVal = parseFloat(document.getElementById('recycle-input').value);
+            if (isNaN(inputVal) || inputVal <= 0) {
+                showPopup("Entrada inválida. Especifica los kilómetros válidos.", false);
+                return;
+            }
+
+            // Supuesto económico: 1 km en bicicleta evita aprox. 0.2 kg (200g) de CO2 vs un carro fósil promedio
+            const co2Saved = inputVal * 0.2; 
+            // Cada 10 kg de CO2 mitigado otorga 1 token/crédito (CRD)
+            const pointsEarned = Math.round((co2Saved / 10) * 100) / 100; 
+
+            balance += Math.round(pointsEarned * 10); // Escalado visual de puntos
+            userRecycled += Math.round(co2Saved);
+            globalRecycled += Math.round(co2Saved);
+
+            document.getElementById('recycle-input').value = "";
+
+            const feed = document.getElementById('ledger-feed');
+            const newTx = document.createElement('div');
+            newTx.className = "p-2.5 bg-slate-900/60 rounded-xl border border-slate-900 flex justify-between items-center text-xs";
+            newTx.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <span class="p-1.5 bg-cyan-500/10 text-cyan-400 rounded-lg">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                    </span>
+                    <div>
+                        <p class="font-medium">Movilidad Limpia Validada</p>
+                        <p class="text-[9px] text-slate-500">Distancia: ${inputVal} Km · Mitigación Directa</p>
+                    </div>
+                </div>
+                <span class="font-bold text-cyan-400">+${Math.round(pointsEarned * 10)} CRD</span>
+            `;
+            feed.insertBefore(newTx, feed.firstChild);
+
+            updateUI();
+            showPopup(`Compensación Inyectada: +${Math.round(co2Saved)} kg de CO2 evitados en la red.`, true);
+        }
+
+        function redeemReward(rewardName, cost) {
+            if (balance < cost) {
+                showPopup("Créditos insuficientes en tu balance ciudadano.", false);
+                return;
+            }
+
+            balance -= cost;
+
+            const feed = document.getElementById('ledger-feed');
+            const newTx = document.createElement('div');
+            newTx.className = "p-2.5 bg-slate-900/60 rounded-xl border border-slate-900 flex justify-between items-center text-xs";
+            newTx.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <span class="p-1.5 bg-rose-500/10 text-rose-400 rounded-lg">
+                        <i class="fa-solid fa-minus text-[10px]"></i>
+                    </span>
+                    <div>
+                        <p class="font-medium">Subsidio Aplicado: ${rewardName}</p>
+                        <p class="text-[9px] text-slate-500">Fondo de Estímulo Verde · Estado Procesado</p>
+                    </div>
+                </div>
+                <span class="font-bold text-rose-400">-${cost} CRD</span>
+            `;
+            feed.insertBefore(newTx, feed.firstChild);
+
+            updateUI();
+            showPopup(`Incentivo Ejecutado. Se canjeó con éxito: "${rewardName}".`, true);
+        }
+
+        function showPopup(text, isSuccess) {
+            const popup = document.getElementById('success-popup');
+            const popupDesc = document.getElementById('popup-desc');
+            popupDesc.innerText = text;
+
+            if (isSuccess) {
+                popup.classList.remove('border-rose-500/40');
+                popup.classList.add('border-cyan-500/40');
+                popup.querySelector('span').className = "w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center";
+                popup.querySelector('span').innerHTML = '<i class="fa-solid fa-check text-lg"></i>';
+                popup.querySelectorAll('p')[0].innerText = "Transacción Completada";
+            } else {
+                popup.classList.remove('border-cyan-500/40');
+                popup.classList.add('border-rose-500/40');
+                popup.querySelector('span').className = "w-10 h-10 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center";
+                popup.querySelector('span').innerHTML = '<i class="fa-solid fa-xmark text-lg"></i>';
+                popup.querySelectorAll('p')[0].innerText = "Acción Rechazada";
+            }
+
+            popup.classList.remove('hidden');
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
